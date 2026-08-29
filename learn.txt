@@ -1,0 +1,8 @@
+virtual environment
+all project same packages
+
+a > Flask 2
+b flask 3 
+with venv
+
+pip3 install flask sqlalchemy pymsql spoenai PyPDF2
