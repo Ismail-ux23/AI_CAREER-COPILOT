@@ -12,7 +12,10 @@
             <nav>
                 <a href="/history">History</a>
                 <a href="/dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
+                <form action="/logout" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit">Logout</button>
+                </form>
             </nav>
 
         </div>

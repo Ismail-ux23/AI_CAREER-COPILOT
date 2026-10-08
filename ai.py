@@ -1,5 +1,6 @@
 from ollama import chat
 import json
+import os
 
 
 def analyze_resume(resume_text, user_goal):
@@ -25,7 +26,7 @@ Resume:
 
     try:
         response = chat(
-            model="llama3.2:1b",
+            model=os.getenv('OLLAMA_MODEL', 'llama3.2:1b'),
             messages=[
                 {
                     "role": "system",
@@ -42,13 +43,21 @@ Resume:
         start = content.find("{")
         end = content.rfind("}") + 1
 
-        return json.loads(content[start:end])
+        result = json.loads(content[start:end])
+        required = ('skills', 'missing_skills', 'roadmap', 'interview_questions')
+        if not isinstance(result, dict) or any(
+            not isinstance(result.get(key), list)
+            or any(not isinstance(item, str) for item in result[key])
+            for key in required
+        ):
+            raise ValueError('Invalid career analysis response')
+        return {key: result[key] for key in required}
 
-    except Exception as e:
+    except Exception:
         return {
             "skills": [],
             "missing_skills": [],
             "roadmap": [],
             "interview_questions": [],
-            "error": str(e)
+            "error": 'AI service unavailable or returned invalid analysis. Check Ollama and the configured model.'
         }
