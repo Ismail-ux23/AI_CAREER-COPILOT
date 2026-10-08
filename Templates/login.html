@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
 <div class="auth-container">
     <div class="auth-card">
         <h2>Welcome Back 👋🏼</h2>
@@ -7,14 +8,13 @@
             login to access your account 
         </p>
         <form action="" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
              <input type="email" name="email" placeholder="Enter your email">
             <input type="password" name="password" placeholder="Enter your password">
             <button type="submit">Login</button>
         </form>
 
-        <div class="auth-links">
-            <a href="#">Forgot Password</a>
-        </div>
+
         <p class="switch-auth">
             Don't have an account? <a href="/signup">Sign up</a>
         </p>

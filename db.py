@@ -1,22 +1,20 @@
+"""Database configuration; credentials belong in the environment."""
+import os
+from pathlib import Path
+
 import certifi
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from sqlalchemy.engine import make_url
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = (
-    "mysql+pymysql://38DFJLJN9vArz8q.root:UVpUkfrThDH0gdoY@"
-    "gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/test"
-)
-
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-    connect_args={
-        "ssl": {
-            "ca": certifi.where(),
-            "check_hostname": True,
-        }
-    },
-)
-
+load_dotenv()
+instance = Path(__file__).resolve().parent / 'instance'
+instance.mkdir(exist_ok=True)
+DATABASE_URL = os.getenv('DATABASE_URL', f'sqlite:///{instance / "copilot.db"}')
+connect_args = {}
+if make_url(DATABASE_URL).drivername == 'mysql+pymysql':
+    connect_args['ssl'] = {'ca': certifi.where(), 'check_hostname': True}
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, connect_args=connect_args)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()

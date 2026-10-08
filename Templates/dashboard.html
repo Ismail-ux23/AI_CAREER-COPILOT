@@ -6,6 +6,7 @@
 <div class="card">
     <h3>Resume Analyser</h3>
     <form action="" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <textarea name="resume" placeholder="Paste your resume (optional)"></textarea>
         <p>OR upload file:</p>
         <input type="file" name="file">
